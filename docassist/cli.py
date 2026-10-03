@@ -16,6 +16,7 @@ from docassist.retrieval import BM25Index
 
 
 def print_answer(index: BM25Index, question: str, use_llm: bool) -> None:
+    """Answer one question and print the answer, its sources and the mode used."""
     result = ask(index, question, use_llm=use_llm)
     print(f"\n{result.text}\n")
     for number, chunk, score in result.sources:
@@ -24,6 +25,7 @@ def print_answer(index: BM25Index, question: str, use_llm: bool) -> None:
 
 
 def main(argv: list[str] | None = None) -> int:
+    """Command-line entry point; returns the process exit code."""
     parser = argparse.ArgumentParser(description="Ask questions about a folder of documents")
     parser.add_argument("folder", type=Path)
     parser.add_argument("question", nargs="?")

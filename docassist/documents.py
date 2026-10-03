@@ -15,6 +15,8 @@ TERMINAL = (".", "!", "?", ":")
 
 @dataclass
 class Chunk:
+    """A piece of document text plus the file name and page it came from."""
+
     text: str
     source: str
     page: int | None
@@ -22,6 +24,7 @@ class Chunk:
 
     @property
     def citation(self) -> str:
+        """Human-readable source, e.g. "handbook.pdf, p. 2"."""
         return f"{self.source}, p. {self.page}" if self.page else self.source
 
 
@@ -89,5 +92,6 @@ def load_documents(files: list[tuple[str, bytes]], max_chars: int = 600) -> list
 
 
 def load_folder(folder: str | Path) -> list[Chunk]:
+    """Load every supported file (PDF/TXT/MD) in `folder` into chunks; other files are ignored."""
     paths = sorted(p for p in Path(folder).iterdir() if p.suffix.lower() in SUPPORTED)
     return load_documents([(p.name, p.read_bytes()) for p in paths])

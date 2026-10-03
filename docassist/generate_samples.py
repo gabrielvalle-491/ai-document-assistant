@@ -56,6 +56,7 @@ DOCUMENTS = {
 
 
 def generate(folder: Path) -> list[Path]:
+    """Write the demo PDFs into `folder` (created if needed) and return their paths."""
     folder.mkdir(parents=True, exist_ok=True)
     styles = getSampleStyleSheet()
     paths = []
@@ -74,6 +75,7 @@ def generate(folder: Path) -> list[Path]:
 
 
 def main() -> None:
+    """Command-line entry point: generate the demo PDFs and print their paths."""
     parser = argparse.ArgumentParser()
     parser.add_argument("folder", type=Path, nargs="?", default=Path("samples"))
     args = parser.parse_args()

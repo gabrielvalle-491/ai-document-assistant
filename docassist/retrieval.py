@@ -22,6 +22,7 @@ cuales donde quien porque mi tu nuestro nuestra hay qué cómo cuándo dónde cu
 
 
 def tokenize(text: str) -> list[str]:
+    """Lowercase, strip accents, drop EN/ES stopwords and lightly stem the remaining words."""
     text = unicodedata.normalize("NFKD", text.lower()).encode("ascii", "ignore").decode()
     tokens = re.findall(r"[a-z0-9]+", text)
     return [_stem(t) for t in tokens if t not in STOPWORDS and len(t) > 1]
@@ -38,6 +39,8 @@ def _stem(token: str) -> str:
 
 
 class BM25Index:
+    """Keyword index over chunks, ranked with the BM25 formula."""
+
     def __init__(self, chunks: list[Chunk], k1: float = 1.5, b: float = 0.75) -> None:
         self.chunks = chunks
         self.k1, self.b = k1, b
@@ -49,6 +52,7 @@ class BM25Index:
         self.idf = {t: math.log(1 + (n - f + 0.5) / (f + 0.5)) for t, f in df.items()}
 
     def search(self, query: str, top_k: int = 4) -> list[tuple[Chunk, float]]:
+        """Return up to `top_k` (chunk, score) pairs with a positive score, best first."""
         terms = tokenize(query)
         scored = []
         for chunk, doc, length in zip(self.chunks, self.docs, self.lengths):

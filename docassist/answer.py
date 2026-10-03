@@ -28,17 +28,21 @@ SYSTEM = (
 
 @dataclass
 class Answer:
+    """An answer plus the numbered sources it was built from."""
+
     text: str
     sources: list[tuple[int, Chunk, float]]
     mode: str  # "claude", "gemini" or "extractive"
 
 
 def build_prompt(question: str, hits: list[tuple[Chunk, float]]) -> str:
+    """Build the user prompt: numbered context passages (with citations) followed by the question."""
     context = "\n\n".join(f"[{i}] ({chunk.citation})\n{chunk.text}" for i, (chunk, _) in enumerate(hits, start=1))
     return f"Context passages:\n{context}\n\nQuestion: {question}"
 
 
 def provider() -> str | None:
+    """Return the configured AI provider ("claude" or "gemini"), or None if no API key is set."""
     if os.environ.get("ANTHROPIC_API_KEY"):
         return "claude"
     if os.environ.get("GEMINI_API_KEY"):
@@ -47,6 +51,7 @@ def provider() -> str | None:
 
 
 def call_llm(prompt: str, which: str, system: str = SYSTEM) -> str:
+    """Send `prompt` to Claude or Gemini and return the reply text (raises on HTTP errors)."""
     if which == "claude":
         resp = httpx.post(
             "https://api.anthropic.com/v1/messages", timeout=60,
@@ -98,6 +103,7 @@ def expand_query(question: str, which: str) -> str:
 
 
 def ask(index: BM25Index, question: str, top_k: int = 4, use_llm: bool = True) -> Answer:
+    """Retrieve the best passages for `question` and answer with an LLM or the extractive fallback."""
     which = provider() if use_llm else None
     query = expand_query(question, which) if which else question
     hits = index.search(query, top_k=top_k)
