@@ -114,7 +114,7 @@ docassist/
 ├── answer.py              # prompt with numbered passages, Claude/Gemini calls, extractive fallback
 ├── generate_samples.py    # demo PDFs: employee handbook, customer FAQ, SLA
 └── cli.py                 # terminal interface
-tests/                     # 12 pytest tests (retrieval accuracy, citations, fallbacks)
+tests/                     # 19 pytest tests (retrieval accuracy, citations, fallbacks)
 ```
 
 ## Tests
@@ -128,6 +128,18 @@ pytest -q
 - Demo documents are fictional (`generate_samples.py`).
 - Documents are processed locally; only the top passages are sent to the AI provider when a key is configured.
 - Built with Python and [Claude Code](https://claude.com/claude-code) as an AI pair programmer.
+
+## How I would deliver this to a client
+
+If you hire me for this, I would:
+
+- **Ask for the input files** in one shared folder: text-based PDFs, `.txt` or `.md` files (policies, contracts, manuals, FAQs). Other file types are ignored, and scanned PDFs would need OCR first, so I would check a sample of your files before starting.
+- **Keep it up to date weekly** by having you drop new or replaced documents into that folder. The index is rebuilt from the folder on every run, so there is nothing to retrain.
+- **Make every answer verifiable**: each one lists the document, page and relevance score it came from.
+- **Report "not found" honestly**: when the documents don't contain the answer, the tool replies *"I couldn't find this in the uploaded documents."* instead of guessing.
+- **Surface errors clearly**: the command exits with code 1 and a message when the folder is missing or contains no supported documents, and if the AI provider fails it shows the extractive answer with an "LLM unavailable" note (the `mode:` line tells you which was used).
+- **Agree on what leaves your machine**: documents are processed locally, only the top passages go to the AI provider, and `--no-llm` keeps everything offline.
+- **Add a skip-and-report step for unreadable files** before handing it over, since today a corrupted PDF stops the run.
 
 ## Author
 
