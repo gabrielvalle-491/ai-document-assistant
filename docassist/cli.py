@@ -32,6 +32,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--no-llm", action="store_true", help="Extractive answers only (no API calls)")
     args = parser.parse_args(argv)
 
+    if not args.folder.is_dir():
+        print(f"Folder not found: {args.folder}", file=sys.stderr)
+        return 1
     chunks = load_folder(args.folder)
     if not chunks:
         print(f"No PDF/TXT/MD documents found in {args.folder}", file=sys.stderr)
@@ -39,7 +42,7 @@ def main(argv: list[str] | None = None) -> int:
     index = BM25Index(chunks)
     print(f"Indexed {len(chunks)} passages from {len({c.source for c in chunks})} documents.")
 
-    if args.question:
+    if args.question is not None:  # an explicit "" answers once instead of entering interactive mode
         print_answer(index, args.question, not args.no_llm)
         return 0
     while True:
