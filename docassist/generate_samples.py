@@ -76,7 +76,7 @@ def generate(folder: Path) -> list[Path]:
 
 def main() -> None:
     """Command-line entry point: generate the demo PDFs and print their paths."""
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(prog="python -m docassist.generate_samples", description="Create demo company PDFs")
     parser.add_argument("folder", type=Path, nargs="?", default=Path("samples"))
     args = parser.parse_args()
     for path in generate(args.folder):

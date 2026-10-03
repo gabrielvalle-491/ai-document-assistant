@@ -26,9 +26,9 @@ def print_answer(index: BM25Index, question: str, use_llm: bool) -> None:
 
 def main(argv: list[str] | None = None) -> int:
     """Command-line entry point; returns the process exit code."""
-    parser = argparse.ArgumentParser(description="Ask questions about a folder of documents")
-    parser.add_argument("folder", type=Path)
-    parser.add_argument("question", nargs="?")
+    parser = argparse.ArgumentParser(prog="python -m docassist", description="Ask questions about a folder of documents")
+    parser.add_argument("folder", type=Path, help="Folder with PDF, TXT or Markdown files")
+    parser.add_argument("question", nargs="?", help="Question to ask (omit for interactive mode)")
     parser.add_argument("--no-llm", action="store_true", help="Extractive answers only (no API calls)")
     args = parser.parse_args(argv)
 
