@@ -1,5 +1,7 @@
 # AI Document Assistant
 
+Español: [README.es.md](README.es.md)
+
 ![CI](https://github.com/gabrielvalle-491/ai-document-assistant/actions/workflows/ci.yml/badge.svg)
 ![Python](https://img.shields.io/badge/python-3.11%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
